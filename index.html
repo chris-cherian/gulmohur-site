@@ -1,396 +1,2951 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Gulmohur Center</title>
-    <!-- Chosen Palette: Deep Forest Green, Soft Gold, Creamy Off-white -->
-    <!-- Application Structure Plan: Single-page application (SPA) structure. Navigation links smoothly scroll to different content sections (Home, About, Events, etc.) within the same HTML file. This provides a fluid, modern user experience without page reloads. The main interactive feature is a dynamic JavaScript-powered calendar in the 'Events' section, which allows users to browse upcoming activities, fulfilling the site's primary goal. The structure is task-oriented, prioritizing easy access to event information. -->
-    <!-- Visualization & Content Choices: Report Info: Event Schedule -> Goal: Inform users of upcoming events -> Viz/Presentation Method: Interactive Monthly Calendar Grid (HTML/CSS/JS) -> Interaction: Users can navigate between months and click on specific dates to view event details in a modal popup. -> Justification: A calendar is the most intuitive and universally understood way to display date-based information, perfectly matching the user's needs. -> Library/Method: Vanilla JavaScript for logic, Tailwind CSS for styling. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="description" content="Rise Up Youth — A vibrant Christian youth community where faith, friendship, and football come together. Join Bible studies, football matches, and fellowship events.">
+    <meta name="keywords" content="youth group, Christian youth, Bible study, football, fellowship, community service, leadership">
+    <meta name="author" content="Rise Up Youth">
+    <meta property="og:title" content="Rise Up Youth — Faith. Friendship. Football.">
+    <meta property="og:description" content="A vibrant youth community where faith, friendship, and football come together.">
+    <meta property="og:type" content="website">
+    <title>Rise Up Youth — Faith. Friendship. Football.</title>
+
+    <!-- Google Fonts: Kanit (athletic display) + Poppins (clean body) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <style>
+        /* ============================================
+           CSS CUSTOM PROPERTIES — DESIGN TOKENS
+           ============================================ */
+        :root {
+            /* Palette */
+            --navy-deep: #060a1f;
+            --navy: #0a0e27;
+            --navy-light: #111638;
+            --navy-mid: #161b45;
+            --blue-electric: #00d4ff;
+            --blue-glow: #00a8ff;
+            --purple: #7b2ff7;
+            --purple-deep: #5a1fd6;
+            --purple-light: #a855f7;
+            --gold: #ffd952;
+            --gold-deep: #f5c518;
+            --white: #ffffff;
+            --white-90: rgba(255,255,255,0.9);
+            --white-70: rgba(255,255,255,0.7);
+            --white-50: rgba(255,255,255,0.5);
+            --white-20: rgba(255,255,255,0.2);
+            --white-10: rgba(255,255,255,0.1);
+            --white-05: rgba(255,255,255,0.05);
+
+            /* Typography */
+            --font-display: 'Kanit', sans-serif;
+            --font-body: 'Poppins', sans-serif;
+
+            /* Spacing */
+            --section-pad: clamp(60px, 10vw, 120px);
+            --container-max: 1200px;
+
+            /* Effects */
+            --glass-bg: rgba(10, 14, 39, 0.65);
+            --glass-border: rgba(255,255,255,0.08);
+            --glass-blur: 20px;
+            --radius: 16px;
+            --radius-sm: 10px;
+            --radius-xs: 6px;
+            --shadow-card: 0 8px 32px rgba(0,0,0,0.3);
+            --shadow-glow-blue: 0 0 30px rgba(0,212,255,0.25);
+            --shadow-glow-purple: 0 0 30px rgba(123,47,247,0.25);
+            --shadow-glow-gold: 0 0 30px rgba(255,217,82,0.25);
+            --transition: 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+
+        /* ============================================
+           RESET & BASE STYLES
+           ============================================ */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #FAF9F6;
-            color: #1E5631;
+            font-family: var(--font-body);
+            background: var(--navy-deep);
+            color: var(--white-90);
+            line-height: 1.7;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
-        .bg-brand-green { background-color: #1E5631; }
-        .bg-brand-off-white { background-color: #FAF9F6; }
-        .text-brand-green { color: #1E5631; }
-        .text-brand-gold { color: #C8A870; }
-        .border-brand-gold { border-color: #C8A870; }
-        .bg-brand-gold { background-color: #C8A870; }
-        .nav-link {
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--navy-deep); }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(var(--purple), var(--blue-electric));
+            border-radius: 4px;
+        }
+
+        ::selection {
+            background: var(--purple);
+            color: var(--white);
+        }
+
+        img { max-width: 100%; display: block; }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        button { cursor: pointer; border: none; font-family: var(--font-body); }
+
+        /* ============================================
+           UTILITY CLASSES
+           ============================================ */
+        .container {
+            max-width: var(--container-max);
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-label {
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--blue-electric);
+            margin-bottom: 12px;
+            display: inline-block;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 4.5vw, 3.2rem);
+            font-weight: 800;
+            line-height: 1.15;
+            color: var(--white);
+            margin-bottom: 16px;
+        }
+
+        .section-title .accent-blue { color: var(--blue-electric); }
+        .section-title .accent-gold { color: var(--gold); }
+        .section-title .accent-purple { color: var(--purple-light); }
+
+        .section-desc {
+            font-size: 1.05rem;
+            color: var(--white-70);
+            max-width: 640px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        /* Scroll Reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.22, 0.61, 0.36, 1),
+                        transform 0.8s cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+        .reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Glass Card */
+        .glass-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+        }
+
+        /* Grain Overlay */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0.028;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 200px;
+        }
+
+        /* ============================================
+           NAVIGATION
+           ============================================ */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 20px 0;
+            transition: all 0.4s ease;
+        }
+
+        .navbar.scrolled {
+            padding: 12px 0;
+            background: rgba(6, 10, 31, 0.72);
+            border-bottom: 1px solid var(--glass-border);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
+
+        .nav-inner {
+            max-width: var(--container-max);
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-logo {
+            font-family: var(--font-display);
+            font-weight: 900;
+            font-size: 1.5rem;
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-logo .logo-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--blue-electric), var(--purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .nav-logo span {
+            background: linear-gradient(135deg, var(--white), var(--blue-electric));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .nav-links a {
+            font-size: 0.88rem;
+            font-weight: 500;
+            color: var(--white-70);
+            letter-spacing: 0.5px;
             position: relative;
-            transition: color 0.3s;
+            transition: color var(--transition);
         }
-        .nav-link::after {
+
+        .nav-links a::after {
             content: '';
             position: absolute;
+            bottom: -4px;
+            left: 0;
             width: 0;
             height: 2px;
-            bottom: -4px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #C8A870;
-            transition: width 0.3s;
+            background: var(--blue-electric);
+            transition: width var(--transition);
+            border-radius: 1px;
         }
-        .nav-link:hover::after, .nav-link.active::after {
-            width: 100%;
+
+        .nav-links a:hover { color: var(--white); }
+        .nav-links a:hover::after { width: 100%; }
+
+        .nav-cta {
+            background: linear-gradient(135deg, var(--blue-electric), var(--purple));
+            color: var(--white) !important;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: transform var(--transition), box-shadow var(--transition);
         }
-        .hero-bg {
-            /* Updated to use an online background image of friends laughing */
-            background-image: url('https://images.unsplash.com/photo-1517431251347-16447c20c6c7');
-            background-size: cover;
-            background-position: center;
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow-blue);
         }
-        .calendar-day.has-event {
-            cursor: pointer;
+
+        .nav-cta::after { display: none !important; }
+
+        /* Hamburger */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            padding: 8px;
+            z-index: 1002;
+        }
+
+        .hamburger span {
+            width: 26px;
+            height: 2.5px;
+            background: var(--white);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+            transform-origin: center;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+
+        /* Mobile Nav */
+        .mobile-nav {
+            position: fixed;
+            inset: 0;
+            z-index: 1001;
+            background: rgba(6, 10, 31, 0.96);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 28px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .mobile-nav.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .mobile-nav a {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--white-70);
+            transition: color 0.3s;
+        }
+
+        .mobile-nav a:hover { color: var(--blue-electric); }
+
+        /* ============================================
+           HERO SECTION
+           ============================================ */
+        .hero {
             position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
         }
-        .calendar-day.has-event::after {
+
+        /* Background layers */
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+        }
+
+        .hero-bg::before {
             content: '';
             position: absolute;
-            bottom: 6px;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 20% 80%, rgba(123,47,247,0.25) 0%, transparent 60%),
+                radial-gradient(ellipse 70% 50% at 80% 20%, rgba(0,212,255,0.2) 0%, transparent 50%),
+                radial-gradient(ellipse 60% 60% at 50% 50%, rgba(0,168,255,0.08) 0%, transparent 50%),
+                linear-gradient(180deg, var(--navy-deep) 0%, #080c24 50%, var(--navy-deep) 100%);
+        }
+
+        .hero-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 50px,
+                    rgba(255,255,255,0.012) 50px,
+                    rgba(255,255,255,0.012) 51px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 50px,
+                    rgba(255,255,255,0.012) 50px,
+                    rgba(255,255,255,0.012) 51px
+                );
+        }
+
+        /* Floating orbs */
+        .hero-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            animation: orbFloat 12s ease-in-out infinite;
+        }
+
+        .hero-orb-1 {
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(123,47,247,0.3), transparent 70%);
+            top: -10%; left: -10%;
+            animation-delay: 0s;
+        }
+
+        .hero-orb-2 {
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(0,212,255,0.25), transparent 70%);
+            bottom: -10%; right: -5%;
+            animation-delay: -4s;
+        }
+
+        .hero-orb-3 {
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(255,217,82,0.15), transparent 70%);
+            top: 30%; right: 20%;
+            animation-delay: -8s;
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -20px) scale(1.05); }
+            66% { transform: translate(-20px, 20px) scale(0.95); }
+        }
+
+        /* Diagonal football field lines */
+        .hero-field-lines {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            opacity: 0.04;
+        }
+
+        .hero-field-lines::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300px;
+            height: 300px;
+            border: 2px solid var(--white);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .hero-field-lines::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 2px;
+            height: 100%;
+            background: var(--white);
+            transform: translateX(-50%);
+        }
+
+        /* Hero Content */
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 900px;
+            padding: 0 24px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--white-05);
+            border: 1px solid var(--white-10);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--blue-electric);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 32px;
+            backdrop-filter: blur(10px);
+            animation: fadeInDown 0.8s ease 0.2s both;
+        }
+
+        .hero-badge i {
+            font-size: 0.7rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.4rem, 6.5vw, 4.5rem);
+            font-weight: 900;
+            line-height: 1.08;
+            color: var(--white);
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s ease 0.4s both;
+        }
+
+        .hero-title .line { display: block; }
+
+        .hero-title .highlight-blue {
+            background: linear-gradient(135deg, var(--blue-electric), var(--blue-glow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-title .highlight-gold {
+            background: linear-gradient(135deg, var(--gold), var(--gold-deep));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            color: var(--white-70);
+            max-width: 620px;
+            margin: 0 auto 40px;
+            line-height: 1.8;
+            animation: fadeInUp 0.8s ease 0.6s both;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease 0.8s both;
+        }
+
+        /* Buttons */
+        .btn {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 36px;
+            font-family: var(--font-display);
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            border-radius: 50px;
+            overflow: hidden;
+            transition: all var(--transition);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--blue-electric), var(--purple));
+            color: var(--white);
+            box-shadow: 0 4px 20px rgba(0,212,255,0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 35px rgba(0,212,255,0.45);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--white);
+            border: 2px solid var(--white-20);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-glow-gold);
+        }
+
+        /* Button ripple */
+        .btn .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: scale(0);
+            animation: rippleAnim 0.6s ease-out;
+            pointer-events: none;
+        }
+
+        @keyframes rippleAnim {
+            to { transform: scale(4); opacity: 0; }
+        }
+
+        .hero-scroll-indicator {
+            position: absolute;
+            bottom: 40px;
             left: 50%;
             transform: translateX(-50%);
-            width: 6px;
-            height: 6px;
+            z-index: 2;
+            animation: fadeInUp 0.8s ease 1.2s both;
+        }
+
+        .scroll-mouse {
+            width: 28px;
+            height: 44px;
+            border: 2px solid var(--white-20);
+            border-radius: 14px;
+            display: flex;
+            justify-content: center;
+            padding-top: 8px;
+        }
+
+        .scroll-mouse .wheel {
+            width: 3px;
+            height: 10px;
+            background: var(--blue-electric);
+            border-radius: 2px;
+            animation: scrollWheel 2s infinite;
+        }
+
+        @keyframes scrollWheel {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(12px); opacity: 0; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ============================================
+           ABOUT SECTION
+           ============================================ */
+        .about {
+            padding: var(--section-pad) 0;
+            position: relative;
+        }
+
+        .about::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--white-10), transparent);
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+        }
+
+        .about-card {
+            padding: 40px 32px;
+            text-align: center;
+            border-radius: var(--radius);
+            background: var(--white-05);
+            border: 1px solid var(--glass-border);
+            transition: all var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            border-radius: var(--radius) var(--radius) 0 0;
+            transition: height var(--transition);
+        }
+
+        .about-card:nth-child(1)::before { background: linear-gradient(90deg, var(--blue-electric), var(--purple)); }
+        .about-card:nth-child(2)::before { background: linear-gradient(90deg, var(--purple), var(--purple-light)); }
+        .about-card:nth-child(3)::before { background: linear-gradient(90deg, var(--gold), var(--gold-deep)); }
+        .about-card:nth-child(4)::before { background: linear-gradient(90deg, var(--blue-glow), var(--blue-electric)); }
+
+        .about-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--white-20);
+            box-shadow: var(--shadow-card);
+        }
+
+        .about-card:hover::before { height: 4px; }
+
+        .about-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 1.6rem;
+            transition: transform var(--transition);
+        }
+
+        .about-card:hover .about-icon { transform: scale(1.1) rotate(-5deg); }
+
+        .about-card:nth-child(1) .about-icon {
+            background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(123,47,247,0.15));
+            color: var(--blue-electric);
+        }
+        .about-card:nth-child(2) .about-icon {
+            background: linear-gradient(135deg, rgba(123,47,247,0.15), rgba(168,85,247,0.15));
+            color: var(--purple-light);
+        }
+        .about-card:nth-child(3) .about-icon {
+            background: linear-gradient(135deg, rgba(255,217,82,0.15), rgba(245,197,24,0.15));
+            color: var(--gold);
+        }
+        .about-card:nth-child(4) .about-icon {
+            background: linear-gradient(135deg, rgba(0,168,255,0.15), rgba(0,212,255,0.15));
+            color: var(--blue-glow);
+        }
+
+        .about-card h3 {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--white);
+        }
+
+        .about-card p {
+            font-size: 0.92rem;
+            color: var(--white-70);
+            line-height: 1.7;
+        }
+
+        /* ============================================
+           BIBLE STUDY SECTION
+           ============================================ */
+        .bible-study {
+            padding: var(--section-pad) 0;
+            position: relative;
+            background: linear-gradient(180deg, var(--navy-deep), var(--navy), var(--navy-deep));
+        }
+
+        .bible-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .bible-card {
+            padding: 36px;
+            border-radius: var(--radius);
+            background: var(--white-05);
+            border: 1px solid var(--glass-border);
+            transition: all var(--transition);
+        }
+
+        .bible-card:hover {
+            border-color: var(--white-20);
+            transform: translateY(-4px);
+        }
+
+        .bible-card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .bible-card-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .bible-card:nth-child(1) .bible-card-icon {
+            background: linear-gradient(135deg, var(--blue-electric), var(--purple));
+            color: var(--white);
+        }
+        .bible-card:nth-child(2) .bible-card-icon {
+            background: linear-gradient(135deg, var(--purple), var(--purple-light));
+            color: var(--white);
+        }
+        .bible-card:nth-child(3) .bible-card-icon {
+            background: linear-gradient(135deg, var(--gold), var(--gold-deep));
+            color: var(--navy-deep);
+        }
+        .bible-card:nth-child(4) .bible-card-icon {
+            background: linear-gradient(135deg, var(--blue-glow), var(--blue-electric));
+            color: var(--white);
+        }
+
+        .bible-card h3 {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .bible-card-body p {
+            font-size: 0.92rem;
+            color: var(--white-70);
+            margin-bottom: 16px;
+        }
+
+        .schedule-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .schedule-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            background: var(--white-05);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s ease;
+        }
+
+        .schedule-item:hover {
+            background: var(--white-10);
+            border-color: var(--white-20);
+        }
+
+        .schedule-item .day {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--blue-electric);
+            min-width: 90px;
+        }
+
+        .schedule-item .topic {
+            font-size: 0.9rem;
+            color: var(--white-90);
+        }
+
+        .scripture-verse {
+            padding: 28px;
+            background: linear-gradient(135deg, rgba(123,47,247,0.1), rgba(0,212,255,0.05));
+            border-left: 3px solid var(--gold);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            margin-top: 8px;
+        }
+
+        .scripture-verse blockquote {
+            font-size: 1.05rem;
+            font-style: italic;
+            color: var(--white-90);
+            line-height: 1.8;
+            margin-bottom: 8px;
+        }
+
+        .scripture-verse cite {
+            font-size: 0.85rem;
+            color: var(--gold);
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        .prayer-group-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .prayer-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: var(--white-05);
+            border-radius: var(--radius-xs);
+        }
+
+        .prayer-group i {
+            color: var(--blue-electric);
+            font-size: 0.85rem;
+        }
+
+        .prayer-group span {
+            font-size: 0.9rem;
+            color: var(--white-90);
+        }
+
+        /* ============================================
+           FOOTBALL CLUB SECTION
+           ============================================ */
+        .football {
+            padding: var(--section-pad) 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Decorative football pitch lines */
+        .football::after {
+            content: '';
+            position: absolute;
+            bottom: -100px;
+            right: -100px;
+            width: 400px;
+            height: 400px;
+            border: 2px solid var(--white-05);
             border-radius: 50%;
-            background-color: #C8A870;
+            pointer-events: none;
+        }
+
+        .football-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .football-card {
+            padding: 36px;
+            border-radius: var(--radius);
+            background: var(--white-05);
+            border: 1px solid var(--glass-border);
+            transition: all var(--transition);
+        }
+
+        .football-card:hover {
+            border-color: var(--white-20);
+            transform: translateY(-4px);
+        }
+
+        .football-card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .football-card-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, var(--blue-electric), var(--purple));
+            color: var(--white);
+        }
+
+        .football-card h3 {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .fixture-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .fixture-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 18px;
+            background: var(--white-05);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--glass-border);
+        }
+
+        .fixture-teams {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--white-90);
+        }
+
+        .fixture-date {
+            font-size: 0.8rem;
+            color: var(--blue-electric);
+            font-weight: 500;
+        }
+
+        .fixture-result {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 0.9rem;
+            padding: 4px 12px;
+            border-radius: 6px;
+        }
+
+        .fixture-result.win {
+            background: rgba(34,197,94,0.15);
+            color: #22c55e;
+        }
+
+        .fixture-result.upcoming {
+            background: rgba(0,212,255,0.1);
+            color: var(--blue-electric);
+        }
+
+        .stat-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .stat-bar-item label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--white-70);
+            margin-bottom: 8px;
+        }
+
+        .stat-bar-item label span { color: var(--blue-electric); font-weight: 600; }
+
+        .stat-bar {
+            height: 8px;
+            background: var(--white-05);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .stat-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: linear-gradient(90deg, var(--blue-electric), var(--purple));
+            width: 0;
+            transition: width 1.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+
+        .tournament-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .tournament-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 18px;
+            background: var(--white-05);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--glass-border);
+        }
+
+        .tournament-trophy {
+            font-size: 1.5rem;
+        }
+
+        .tournament-info h4 {
+            font-family: var(--font-display);
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .tournament-info p {
+            font-size: 0.82rem;
+            color: var(--white-50);
+        }
+
+        /* ============================================
+           STATISTICS SECTION
+           ============================================ */
+        .stats {
+            padding: var(--section-pad) 0;
+            position: relative;
+            background: linear-gradient(180deg,
+                var(--navy-deep),
+                rgba(123,47,247,0.08) 50%,
+                var(--navy-deep)
+            );
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 40px 24px;
+            border-radius: var(--radius);
+            background: var(--white-05);
+            border: 1px solid var(--glass-border);
+            transition: all var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--white-20);
+        }
+
+        .stat-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 1.4rem;
+        }
+
+        .stat-card:nth-child(1) .stat-icon {
+            background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(123,47,247,0.15));
+            color: var(--blue-electric);
+        }
+        .stat-card:nth-child(2) .stat-icon {
+            background: linear-gradient(135deg, rgba(123,47,247,0.15), rgba(168,85,247,0.15));
+            color: var(--purple-light);
+        }
+        .stat-card:nth-child(3) .stat-icon {
+            background: linear-gradient(135deg, rgba(255,217,82,0.15), rgba(245,197,24,0.15));
+            color: var(--gold);
+        }
+        .stat-card:nth-child(4) .stat-icon {
+            background: linear-gradient(135deg, rgba(0,168,255,0.15), rgba(0,212,255,0.15));
+            color: var(--blue-glow);
+        }
+
+        .stat-number {
+            font-family: var(--font-display);
+            font-size: clamp(2.2rem, 4vw, 3rem);
+            font-weight: 900;
+            color: var(--white);
+            margin-bottom: 4px;
+        }
+
+        .stat-number .counter-suffix {
+            font-size: 0.7em;
+            color: var(--blue-electric);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--white-50);
+            font-weight: 500;
+        }
+
+        /* ============================================
+           EVENTS SECTION
+           ============================================ */
+        .events {
+            padding: var(--section-pad) 0;
+            position: relative;
+        }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 24px;
+        }
+
+        .event-card {
+            border-radius: var(--radius);
+            background: var(--white-05);
+            border: 1px solid var(--glass-border);
+            overflow: hidden;
+            transition: all var(--transition);
+        }
+
+        .event-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--white-20);
+            box-shadow: var(--shadow-card);
+        }
+
+        .event-card-image {
+            height: 180px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .event-card:nth-child(1) .event-card-image {
+            background: linear-gradient(135deg, #0f1b4d, #1a237e, #283593);
+        }
+        .event-card:nth-child(2) .event-card-image {
+            background: linear-gradient(135deg, #1b5e20, #2e7d32, #388e3c);
+        }
+        .event-card:nth-child(3) .event-card-image {
+            background: linear-gradient(135deg, #4a148c, #6a1b9a, #7b1fa2);
+        }
+        .event-card:nth-child(4) .event-card-image {
+            background: linear-gradient(135deg, #e65100, #f57c00, #fb8c00);
+        }
+
+        .event-card-image i {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            color: rgba(255,255,255,0.2);
+        }
+
+        .event-date-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            padding: 8px 14px;
+            border-radius: var(--radius-xs);
+            text-align: center;
+        }
+
+        .event-date-badge .month {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--blue-electric);
+            display: block;
+        }
+
+        .event-date-badge .day {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--white);
+            display: block;
+            line-height: 1;
+        }
+
+        .event-card-body {
+            padding: 28px;
+        }
+
+        .event-card-body h3 {
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 8px;
+        }
+
+        .event-meta {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 14px;
+            font-size: 0.82rem;
+            color: var(--white-50);
+        }
+
+        .event-meta span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .event-meta i { color: var(--blue-electric); font-size: 0.75rem; }
+
+        .event-card-body p {
+            font-size: 0.9rem;
+            color: var(--white-70);
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+
+        .btn-sm {
+            padding: 10px 24px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            border-radius: 50px;
+            font-family: var(--font-display);
+        }
+
+        .btn-register {
+            background: linear-gradient(135deg, var(--blue-electric), var(--purple));
+            color: var(--white);
+            transition: all var(--transition);
+        }
+
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow-blue);
+        }
+
+        /* ============================================
+           GALLERY SECTION
+           ============================================ */
+        .gallery {
+            padding: var(--section-pad) 0;
+            background: linear-gradient(180deg, var(--navy-deep), var(--navy), var(--navy-deep));
+        }
+
+        .gallery-masonry {
+            columns: 4;
+            column-gap: 16px;
+        }
+
+        .gallery-item {
+            break-inside: avoid;
+            margin-bottom: 16px;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+
+        .gallery-item:hover { transform: scale(1.02); }
+
+        .gallery-item img {
+            width: 100%;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-item:hover img { transform: scale(1.08); }
+
+        .gallery-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 40%, rgba(6,10,31,0.85) 100%);
+            opacity: 0;
+            transition: opacity var(--transition);
+            display: flex;
+            align-items: flex-end;
+            padding: 20px;
+        }
+
+        .gallery-item:hover .gallery-overlay { opacity: 1; }
+
+        .gallery-overlay span {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--white);
+        }
+
+        .gallery-overlay i {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.8rem;
+            color: var(--white);
+            opacity: 0.8;
+        }
+
+        /* Gallery placeholder colors */
+        .gallery-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: rgba(255,255,255,0.15);
+        }
+
+        .gp-1 { height: 280px; background: linear-gradient(135deg, #1a237e, #283593, #3949ab); }
+        .gp-2 { height: 200px; background: linear-gradient(135deg, #1b5e20, #2e7d32, #43a047); }
+        .gp-3 { height: 320px; background: linear-gradient(135deg, #4a148c, #7b1fa2); }
+        .gp-4 { height: 240px; background: linear-gradient(135deg, #0d47a1, #1565c0); }
+        .gp-5 { height: 260px; background: linear-gradient(135deg, #e65100, #f57c00); }
+        .gp-6 { height: 300px; background: linear-gradient(135deg, #880e4f, #ad1457); }
+        .gp-7 { height: 220px; background: linear-gradient(135deg, #004d40, #00695c); }
+        .gp-8 { height: 280px; background: linear-gradient(135deg, #311b92, #4527a0); }
+
+        /* Lightbox */
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            background: rgba(0,0,0,0.92);
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .lightbox.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .lightbox-content {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .lightbox-content .lightbox-image {
+            max-width: 80vw;
+            max-height: 70vh;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            font-size: 4rem;
+            color: rgba(255,255,255,0.2);
+            min-width: 300px;
+            min-height: 300px;
+        }
+
+        .lightbox-caption {
+            margin-top: 20px;
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--white-90);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 24px;
+            right: 32px;
+            background: none;
+            font-size: 2rem;
+            color: var(--white-70);
+            transition: color 0.3s;
+        }
+
+        .lightbox-close:hover { color: var(--white); }
+
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--white-10);
+            border: 1px solid var(--white-10);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+
+        .lightbox-nav:hover {
+            background: var(--white-20);
+        }
+
+        .lightbox-prev { left: 24px; }
+        .lightbox-next { right: 24px; }
+
+        /* ============================================
+           TESTIMONIALS SECTION
+           ============================================ */
+        .testimonials {
+            padding: var(--section-pad) 0;
+            position: relative;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .testimonial-card {
+            padding: 36px;
+            border-radius: var(--radius);
+            background: var(--white-05);
+            border: 1px solid var(--glass-border);
+            transition: all var(--transition);
+            position: relative;
+        }
+
+        .testimonial-card::before {
+            content: '\201C';
+            position: absolute;
+            top: 20px;
+            right: 28px;
+            font-family: var(--font-display);
+            font-size: 5rem;
+            line-height: 1;
+            color: var(--white-05);
+            pointer-events: none;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--white-20);
+        }
+
+        .testimonial-stars {
+            display: flex;
+            gap: 3px;
+            margin-bottom: 18px;
+        }
+
+        .testimonial-stars i {
+            color: var(--gold);
+            font-size: 0.85rem;
+        }
+
+        .testimonial-text {
+            font-size: 0.95rem;
+            color: var(--white-70);
+            line-height: 1.8;
+            margin-bottom: 24px;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .testimonial-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 1rem;
+            color: var(--white);
+            flex-shrink: 0;
+        }
+
+        .testimonial-card:nth-child(1) .testimonial-avatar {
+            background: linear-gradient(135deg, var(--blue-electric), var(--purple));
+        }
+        .testimonial-card:nth-child(2) .testimonial-avatar {
+            background: linear-gradient(135deg, var(--purple), var(--purple-light));
+        }
+        .testimonial-card:nth-child(3) .testimonial-avatar {
+            background: linear-gradient(135deg, var(--gold), var(--gold-deep));
+        }
+
+        .testimonial-name {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--white);
+        }
+
+        .testimonial-role {
+            font-size: 0.82rem;
+            color: var(--white-50);
+        }
+
+        /* ============================================
+           CONTACT SECTION
+           ============================================ */
+        .contact {
+            padding: var(--section-pad) 0;
+            background: linear-gradient(180deg, var(--navy-deep), var(--navy), var(--navy-deep));
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: start;
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 16px 20px;
+            background: var(--white-05);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-sm);
+            color: var(--white);
+            font-family: var(--font-body);
+            font-size: 0.92rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: var(--white-50);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--blue-electric);
+            box-shadow: 0 0 0 3px rgba(0,212,255,0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 140px;
+        }
+
+        .btn-submit {
+            padding: 16px 36px;
+            background: linear-gradient(135deg, var(--blue-electric), var(--purple));
+            color: var(--white);
+            font-family: var(--font-display);
+            font-size: 0.95rem;
+            font-weight: 700;
+            border-radius: 50px;
+            transition: all var(--transition);
+            align-self: flex-start;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-glow-blue);
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        .contact-info-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 18px;
+            padding: 24px;
+            background: var(--white-05);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-sm);
+            transition: all var(--transition);
+        }
+
+        .contact-info-card:hover {
+            border-color: var(--white-20);
+            transform: translateX(4px);
+        }
+
+        .contact-info-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(123,47,247,0.15));
+            color: var(--blue-electric);
+        }
+
+        .contact-info-card h4 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--white);
+            margin-bottom: 4px;
+        }
+
+        .contact-info-card p {
+            font-size: 0.88rem;
+            color: var(--white-50);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .social-link {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            background: var(--white-05);
+            border: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: var(--white-70);
+            transition: all var(--transition);
+        }
+
+        .social-link:hover {
+            background: var(--blue-electric);
+            color: var(--white);
+            border-color: var(--blue-electric);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-glow-blue);
+        }
+
+        /* ============================================
+           FOOTER
+           ============================================ */
+        .footer {
+            padding: 60px 0 30px;
+            border-top: 1px solid var(--glass-border);
+            position: relative;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 48px;
+            margin-bottom: 48px;
+        }
+
+        .footer-brand .nav-logo {
+            margin-bottom: 16px;
+        }
+
+        .footer-brand p {
+            font-size: 0.9rem;
+            color: var(--white-50);
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .footer-heading {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--white);
+            margin-bottom: 20px;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .footer-links a {
+            font-size: 0.88rem;
+            color: var(--white-50);
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover { color: var(--blue-electric); }
+
+        .footer-bottom {
+            border-top: 1px solid var(--glass-border);
+            padding-top: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .footer-bottom p {
+            font-size: 0.82rem;
+            color: var(--white-50);
+        }
+
+        .footer-bottom-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-bottom-links a {
+            font-size: 0.82rem;
+            color: var(--white-50);
+            transition: color 0.3s;
+        }
+
+        .footer-bottom-links a:hover { color: var(--blue-electric); }
+
+        /* ============================================
+           RESPONSIVE STYLES
+           ============================================ */
+        @media (max-width: 1024px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+            .gallery-masonry { columns: 3; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hamburger { display: flex; }
+            .bible-grid { grid-template-columns: 1fr; }
+            .football-grid { grid-template-columns: 1fr; }
+            .contact-grid { grid-template-columns: 1fr; }
+            .gallery-masonry { columns: 2; }
+            .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+            .footer-bottom { flex-direction: column; text-align: center; }
+
+            .hero-title {
+                font-size: clamp(2rem, 8vw, 3.2rem);
+            }
+
+            .section-header { margin-bottom: 40px; }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+            .stat-card { padding: 28px 16px; }
+            .gallery-masonry { columns: 1; }
+            .events-grid { grid-template-columns: 1fr; }
+            .testimonials-grid { grid-template-columns: 1fr; }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .hero-buttons .btn {
+                width: 100%;
+                max-width: 280px;
+                justify-content: center;
+            }
+        }
+
+        /* ============================================
+           LOADING ANIMATION
+           ============================================ */
+        .page-loader {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            background: var(--navy-deep);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+
+        .page-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-content {
+            text-align: center;
+        }
+
+        .loader-logo {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, var(--blue-electric), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .loader-bar {
+            width: 200px;
+            height: 3px;
+            background: var(--white-10);
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        .loader-bar-fill {
+            height: 100%;
+            width: 30%;
+            background: linear-gradient(90deg, var(--blue-electric), var(--purple));
+            border-radius: 2px;
+            animation: loaderSlide 1.2s ease-in-out infinite;
+        }
+
+        @keyframes loaderSlide {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(700%); }
+        }
+
+        /* Back to top button */
+        .back-to-top {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--blue-electric), var(--purple));
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(20px);
+            transition: all var(--transition);
+            box-shadow: var(--shadow-glow-blue);
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateY(0);
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-4px);
         }
     </style>
 </head>
-<body class="antialiased">
-
-    <!-- Header & Navigation -->
-    <header id="header" class="bg-brand-off-white sticky top-0 z-50 shadow-md">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="#home" class="text-2xl font-bold text-brand-green">The Gulmohur Center</a>
-            <div class="hidden md:flex items-center space-x-8">
-                <a href="#home" class="nav-link text-brand-green hover:text-brand-gold active">Home</a>
-                <a href="#about" class="nav-link text-brand-green hover:text-brand-gold">About Us</a>
-                <div class="relative group">
-                    <a href="#events" class="nav-link text-brand-green hover:text-brand-gold">Events</a>
-                    <div class="absolute hidden group-hover:block bg-brand-off-white shadow-lg rounded-md mt-2 w-48 py-2">
-                        <a href="#events" class="block px-4 py-2 text-brand-green hover:bg-gray-100">Calendar View</a>
-                        <a href="#past-events" class="block px-4 py-2 text-brand-green hover:bg-gray-100">Past Events</a>
-                    </div>
-                </div>
-                <a href="#resources" class="nav-link text-brand-green hover:text-brand-gold">Resources</a>
-                <a href="#contact" class="nav-link text-brand-green hover:text-brand-gold">Contact</a>
-            </div>
-            <div class="md:hidden">
-                <button id="mobile-menu-button" class="text-brand-green focus:outline-none">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-                </button>
-            </div>
-        </nav>
-        <div id="mobile-menu" class="hidden md:hidden bg-brand-off-white">
-            <a href="#home" class="block py-2 px-6 text-brand-green hover:bg-gray-100">Home</a>
-            <a href="#about" class="block py-2 px-6 text-brand-green hover:bg-gray-100">About Us</a>
-            <a href="#events" class="block py-2 px-6 text-brand-green hover:bg-gray-100">Events</a>
-            <a href="#resources" class="block py-2 px-6 text-brand-green hover:bg-gray-100">Resources</a>
-            <a href="#contact" class="block py-2 px-6 text-brand-green hover:bg-gray-100">Contact</a>
+<body>
+    <!-- ============================
+         PAGE LOADER
+         ============================ -->
+    <div class="page-loader" id="pageLoader">
+        <div class="loader-content">
+            <div class="loader-logo">RISE UP</div>
+            <div class="loader-bar"><div class="loader-bar-fill"></div></div>
         </div>
-    </header>
+    </div>
 
-    <main>
-        <!-- Home Section -->
-        <section id="home" class="hero-bg h-screen flex items-center justify-center text-white text-center">
-            <div class="bg-black bg-opacity-50 p-12 rounded-lg">
-                <h1 class="text-5xl font-bold mb-4">Welcome to The Gulmohur Center</h1>
-                <p class="text-xl max-w-2xl mx-auto mb-8">A warm, professional, and inviting hub for community engagement and personal growth.</p>
-                <a href="#events" class="bg-brand-gold text-brand-green font-bold py-3 px-8 rounded-full text-lg hover:bg-yellow-600 transition duration-300">View Events</a>
+    <!-- ============================
+         NAVIGATION
+         ============================ -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-inner">
+            <a href="#home" class="nav-logo">
+                <div class="logo-icon"><i class="fas fa-cross"></i></div>
+                <span>Rise Up Youth</span>
+            </a>
+            <div class="nav-links" id="navLinks">
+                <a href="#home">Home</a>
+                <a href="#about">About</a>
+                <a href="#bible-study">Bible Study</a>
+                <a href="#football">Football Club</a>
+                <a href="#events">Events</a>
+                <a href="#gallery">Gallery</a>
+                <a href="#testimonials">Testimonials</a>
+                <a href="#contact" class="nav-cta">Contact</a>
             </div>
-        </section>
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
 
-        <!-- About Us Section -->
-        <section id="about" class="py-20">
-            <div class="container mx-auto px-6 text-center">
-                <h2 class="text-4xl font-bold mb-4 text-brand-green">About Us</h2>
-                <p class="text-lg max-w-3xl mx-auto text-gray-700 leading-relaxed">
-                    The Gulmohur Center is dedicated to fostering a strong sense of community and providing a space for personal development. Founded on the principles of connection and support, we offer a variety of events and resources tailored to adults seeking to enrich their lives. Our team is passionate about creating a welcoming environment where everyone feels valued and empowered.
-                </p>
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav" id="mobileNav">
+        <a href="#home" class="mobile-link">Home</a>
+        <a href="#about" class="mobile-link">About</a>
+        <a href="#bible-study" class="mobile-link">Bible Study</a>
+        <a href="#football" class="mobile-link">Football Club</a>
+        <a href="#events" class="mobile-link">Events</a>
+        <a href="#gallery" class="mobile-link">Gallery</a>
+        <a href="#testimonials" class="mobile-link">Testimonials</a>
+        <a href="#contact" class="mobile-link">Contact</a>
+    </div>
+
+    <!-- ============================
+         HERO SECTION
+         ============================ -->
+    <section class="hero" id="home">
+        <div class="hero-bg">
+            <div class="hero-orb hero-orb-1"></div>
+            <div class="hero-orb hero-orb-2"></div>
+            <div class="hero-orb hero-orb-3"></div>
+            <div class="hero-field-lines"></div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-badge">
+                <i class="fas fa-circle"></i>
+                Faith &bull; Friendship &bull; Football
             </div>
-        </section>
+            <h1 class="hero-title">
+                <span class="line">Growing in <span class="highlight-blue">Faith.</span></span>
+                <span class="line">Building <span class="highlight-gold">Friendships.</span></span>
+                <span class="line">Playing with Purpose.</span>
+            </h1>
+            <p class="hero-subtitle">A vibrant youth community where faith, friendship, and football come together.</p>
+            <div class="hero-buttons">
+                <a href="#contact" class="btn btn-primary">
+                    <i class="fas fa-arrow-right"></i> Join Us
+                </a>
+                <a href="#events" class="btn btn-outline">
+                    <i class="far fa-calendar-alt"></i> Upcoming Events
+                </a>
+            </div>
+        </div>
+        <div class="hero-scroll-indicator">
+            <div class="scroll-mouse"><div class="wheel"></div></div>
+        </div>
+    </section>
 
-        <!-- Events Section -->
-        <section id="events" class="py-20 bg-gray-100">
-            <div class="container mx-auto px-6">
-                <h2 class="text-4xl font-bold text-center mb-12 text-brand-green">Upcoming Events</h2>
-                <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-xl">
-                    <div class="flex justify-between items-center mb-6">
-                        <button id="prev-month" class="bg-brand-green text-white py-2 px-4 rounded-lg hover:bg-opacity-90 transition">&lt; Prev</button>
-                        <h3 id="month-year" class="text-2xl font-bold text-brand-green"></h3>
-                        <button id="next-month" class="bg-brand-green text-white py-2 px-4 rounded-lg hover:bg-opacity-90 transition">Next &gt;</button>
-                    </div>
-                    <div id="calendar-header" class="grid grid-cols-7 gap-2 text-center font-semibold text-gray-600 mb-2">
-                        <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
-                    </div>
-                    <div id="calendar-grid" class="grid grid-cols-7 gap-2">
-                        <!-- Calendar days will be generated by JavaScript -->
-                    </div>
+    <!-- ============================
+         ABOUT SECTION
+         ============================ -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-label">Who We Are</span>
+                <h2 class="section-title">Four Pillars of <span class="accent-blue">Rise Up</span></h2>
+                <p class="section-desc">We believe in growing the whole person — spirit, soul, and body. Our community is built on these core values.</p>
+            </div>
+            <div class="about-grid">
+                <div class="about-card reveal" style="transition-delay: 0.1s;">
+                    <div class="about-icon"><i class="fas fa-pray"></i></div>
+                    <h3>Faith</h3>
+                    <p>Deepening our walk with God through authentic worship, personal devotion, and community prayer. We anchor everything in scripture.</p>
+                </div>
+                <div class="about-card reveal" style="transition-delay: 0.2s;">
+                    <div class="about-icon"><i class="fas fa-users"></i></div>
+                    <h3>Fellowship</h3>
+                    <p>Building genuine, lifelong friendships through shared experiences, support, and connection. No one walks alone here.</p>
+                </div>
+                <div class="about-card reveal" style="transition-delay: 0.3s;">
+                    <div class="about-icon"><i class="fas fa-futbol"></i></div>
+                    <h3>Fitness</h3>
+                    <p>Honoring God with our bodies through football, sports, and physical wellness. We play hard and play with purpose.</p>
+                </div>
+                <div class="about-card reveal" style="transition-delay: 0.4s;">
+                    <div class="about-icon"><i class="fas fa-crown"></i></div>
+                    <h3>Leadership</h3>
+                    <p>Developing the next generation of servant-leaders who lead with integrity, courage, and compassion in every area of life.</p>
                 </div>
             </div>
-        </section>
-        
-        <!-- Past Events Section -->
-        <section id="past-events" class="py-20">
-             <div class="container mx-auto px-6">
-                 <h2 class="text-4xl font-bold text-center mb-12 text-brand-green">Past Events</h2>
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div class="bg-white p-6 rounded-lg shadow-lg">
-                        <h3 class="font-bold text-xl text-brand-green mb-2">Annual Community BBQ</h3>
-                        <p class="text-brand-gold mb-2">August 15, 2025</p>
-                        <p class="text-gray-700">A wonderful day of food, games, and connection with over 100 members in attendance.</p>
-                    </div>
-                     <div class="bg-white p-6 rounded-lg shadow-lg">
-                        <h3 class="font-bold text-xl text-brand-green mb-2">Financial Wellness Workshop</h3>
-                        <p class="text-brand-gold mb-2">July 22, 2025</p>
-                        <p class="text-gray-700">An informative session with guest speaker John Doe on managing personal finances.</p>
-                    </div>
-                     <div class="bg-white p-6 rounded-lg shadow-lg">
-                        <h3 class="font-bold text-xl text-brand-green mb-2">Summer Hiking Trip</h3>
-                        <p class="text-brand-gold mb-2">June 12, 2025</p>
-                        <p class="text-gray-700">An adventurous day trip to the local national park, enjoying nature and camaraderie.</p>
-                    </div>
-                </div>
-             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Resources Section -->
-        <section id="resources" class="py-20 bg-gray-100">
-            <div class="container mx-auto px-6 text-center">
-                <h2 class="text-4xl font-bold mb-4 text-brand-green">Resources</h2>
-                <p class="text-lg max-w-3xl mx-auto text-gray-700 mb-8">
-                    Explore our curated list of resources from trusted partners to support your personal and professional growth.
-                </p>
-                <div class="flex flex-wrap justify-center gap-4">
-                    <a href="#" class="bg-brand-green text-white font-semibold py-3 px-6 rounded-lg hover:bg-opacity-90 transition">Community Partners</a>
-                    <a href="#" class="bg-brand-green text-white font-semibold py-3 px-6 rounded-lg hover:bg-opacity-90 transition">Recommended Reading</a>
-                    <a href="#" class="bg-brand-green text-white font-semibold py-3 px-6 rounded-lg hover:bg-opacity-90 transition">Local Support Groups</a>
-                </div>
+    <!-- ============================
+         BIBLE STUDY SECTION
+         ============================ -->
+    <section class="bible-study" id="bible-study">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-label">Dig Deeper</span>
+                <h2 class="section-title">Bible Study & <span class="accent-gold">Devotion</span></h2>
+                <p class="section-desc">Growing in the knowledge and love of God's Word together. Every session is a step closer to who He made you to be.</p>
             </div>
-        </section>
-
-        <!-- Contact & Location Section -->
-        <section id="contact" class="py-20">
-            <div class="container mx-auto px-6">
-                <div class="grid md:grid-cols-2 gap-12 items-start">
-                    <div>
-                        <h2 class="text-4xl font-bold mb-6 text-brand-green">Get In Touch</h2>
-                        <form>
-                            <div class="mb-4">
-                                <label for="name" class="block text-gray-700 mb-2">Name</label>
-                                <input type="text" id="name" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-brand-gold">
-                            </div>
-                            <div class="mb-4">
-                                <label for="email" class="block text-gray-700 mb-2">Email</label>
-                                <input type="email" id="email" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-brand-gold">
-                            </div>
-                            <div class="mb-4">
-                                <label for="message" class="block text-gray-700 mb-2">Message</label>
-                                <textarea id="message" rows="5" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-brand-gold"></textarea>
-                            </div>
-                            <button type="submit" class="w-full bg-brand-gold text-brand-green font-bold py-3 px-6 rounded-lg hover:bg-yellow-600 transition duration-300">Send Message</button>
-                        </form>
+            <div class="bible-grid">
+                <!-- Weekly Schedule -->
+                <div class="bible-card reveal" style="transition-delay: 0.1s;">
+                    <div class="bible-card-header">
+                        <div class="bible-card-icon"><i class="fas fa-calendar-week"></i></div>
+                        <h3>Weekly Schedule</h3>
                     </div>
-                    <div>
-                        <h3 class="text-2xl font-bold mb-4 text-brand-green">Our Location</h3>
-                        <p class="text-gray-700 mb-2">123 Gulmohur Lane, Community City, 12345</p>
-                        <p class="text-gray-700 mb-4">Phone: (123) 456-7890</p>
-                        <div class="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden border-2 border-brand-gold">
-                           <div class="bg-gray-200 flex items-center justify-center text-gray-500">
-                               Map Placeholder
-                           </div>
+                    <div class="bible-card-body">
+                        <div class="schedule-list">
+                            <div class="schedule-item">
+                                <span class="day">Tuesday</span>
+                                <span class="topic">Youth Bible Study — 6:30 PM</span>
+                            </div>
+                            <div class="schedule-item">
+                                <span class="day">Thursday</span>
+                                <span class="topic">Prayer & Worship — 7:00 PM</span>
+                            </div>
+                            <div class="schedule-item">
+                                <span class="day">Saturday</span>
+                                <span class="topic">Small Groups — 10:00 AM</span>
+                            </div>
+                            <div class="schedule-item">
+                                <span class="day">Sunday</span>
+                                <span class="topic">Youth Service — 9:00 AM</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Current Study Series -->
+                <div class="bible-card reveal" style="transition-delay: 0.2s;">
+                    <div class="bible-card-header">
+                        <div class="bible-card-icon"><i class="fas fa-book-open"></i></div>
+                        <h3>Current Study Series</h3>
+                    </div>
+                    <div class="bible-card-body">
+                        <p><strong style="color:var(--white);">Unshakeable: Standing Firm in an Uncertain World</strong></p>
+                        <p>A 12-week journey through the book of Daniel exploring faith under fire, godly courage, and the sovereignty of God. We're currently in Week 8.</p>
+                        <div style="margin-top:16px; display:flex; gap:8px; flex-wrap:wrap;">
+                            <span style="padding:6px 14px; background:var(--white-05); border-radius:50px; font-size:0.8rem; color:var(--blue-electric);">12 Weeks</span>
+                            <span style="padding:6px 14px; background:var(--white-05); border-radius:50px; font-size:0.8rem; color:var(--purple-light);">Book of Daniel</span>
+                            <span style="padding:6px 14px; background:var(--white-05); border-radius:50px; font-size:0.8rem; color:var(--gold);">Week 8</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scripture of the Week -->
+                <div class="bible-card reveal" style="transition-delay: 0.3s;">
+                    <div class="bible-card-header">
+                        <div class="bible-card-icon"><i class="fas fa-bible"></i></div>
+                        <h3>Scripture of the Week</h3>
+                    </div>
+                    <div class="bible-card-body">
+                        <div class="scripture-verse">
+                            <blockquote>"Don't let anyone look down on you because you are young, but set an example for the believers in speech, in conduct, in love, in faith and in purity."</blockquote>
+                            <cite>— 1 Timothy 4:12 (NIV)</cite>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prayer Groups -->
+                <div class="bible-card reveal" style="transition-delay: 0.4s;">
+                    <div class="bible-card-header">
+                        <div class="bible-card-icon"><i class="fas fa-hands-praying"></i></div>
+                        <h3>Prayer Groups</h3>
+                    </div>
+                    <div class="bible-card-body">
+                        <p>Join a prayer group and experience the power of praying together.</p>
+                        <div class="prayer-group-list" style="margin-top:14px;">
+                            <div class="prayer-group">
+                                <i class="fas fa-circle-dot"></i>
+                                <span>Intercessory Prayer — Mon & Wed</span>
+                            </div>
+                            <div class="prayer-group">
+                                <i class="fas fa-circle-dot"></i>
+                                <span>Morning Watch — Daily 6:00 AM</span>
+                            </div>
+                            <div class="prayer-group">
+                                <i class="fas fa-circle-dot"></i>
+                                <span>Prayer Partners — Paired Weekly</span>
+                            </div>
+                            <div class="prayer-group">
+                                <i class="fas fa-circle-dot"></i>
+                                <span>Night of Prayer — Last Friday of Month</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-brand-green text-brand-off-white py-6">
-        <div class="container mx-auto px-6 text-center">
-            <p>&copy; 2025 The Gulmohur Center. All Rights Reserved.</p>
         </div>
-    </footer>
+    </section>
 
-    <!-- Event Modal -->
-    <div id="event-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white p-8 rounded-lg shadow-xl w-11/12 max-w-lg relative">
-            <button id="close-modal" class="absolute top-4 right-4 text-gray-600 hover:text-black text-2xl">&times;</button>
-            <h2 id="modal-title" class="text-3xl font-bold text-brand-green mb-4"></h2>
-            <p class="text-brand-gold text-lg mb-2"><span id="modal-date"></span> at <span id="modal-time"></span></p>
-            <p class="text-gray-700 text-lg"><span class="font-semibold">Location:</span> <span id="modal-location"></span></p>
+    <!-- ============================
+         FOOTBALL CLUB SECTION
+         ============================ -->
+    <section class="football" id="football">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-label">Game On</span>
+                <h2 class="section-title">Rise Up <span class="accent-blue">Football Club</span></h2>
+                <p class="section-desc">More than a team — a brotherhood. We train hard, compete with honor, and glorify God on the pitch.</p>
+            </div>
+            <div class="football-grid">
+                <!-- Training Schedule -->
+                <div class="football-card reveal" style="transition-delay: 0.1s;">
+                    <div class="football-card-header">
+                        <div class="football-card-icon"><i class="fas fa-stopwatch"></i></div>
+                        <h3>Training Schedule</h3>
+                    </div>
+                    <div class="schedule-list">
+                        <div class="schedule-item">
+                            <span class="day">Monday</span>
+                            <span class="topic">Fitness & Conditioning — 5:00 PM</span>
+                        </div>
+                        <div class="schedule-item">
+                            <span class="day">Wednesday</span>
+                            <span class="topic">Technical Skills — 5:00 PM</span>
+                        </div>
+                        <div class="schedule-item">
+                            <span class="day">Friday</span>
+                            <span class="topic">Tactical & Match Prep — 4:30 PM</span>
+                        </div>
+                        <div class="schedule-item">
+                            <span class="day">Saturday</span>
+                            <span class="topic">Match Day / Scrimmage — 2:00 PM</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Match Fixtures -->
+                <div class="football-card reveal" style="transition-delay: 0.2s;">
+                    <div class="football-card-header">
+                        <div class="football-card-icon"><i class="fas fa-futbol"></i></div>
+                        <h3>Match Fixtures</h3>
+                    </div>
+                    <div class="fixture-list">
+                        <div class="fixture-item">
+                            <div>
+                                <div class="fixture-teams">Rise Up vs. City Lions</div>
+                                <div class="fixture-date">Sat, June 14</div>
+                            </div>
+                            <span class="fixture-result upcoming">Upcoming</span>
+                        </div>
+                        <div class="fixture-item">
+                            <div>
+                                <div class="fixture-teams">Rise Up vs. Eagle FC</div>
+                                <div class="fixture-date">Sat, June 7</div>
+                            </div>
+                            <span class="fixture-result win">3 - 1 W</span>
+                        </div>
+                        <div class="fixture-item">
+                            <div>
+                                <div class="fixture-teams">Rise Up vs. United Grace</div>
+                                <div class="fixture-date">Sat, May 31</div>
+                            </div>
+                            <span class="fixture-result win">2 - 0 W</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team Statistics -->
+                <div class="football-card reveal" style="transition-delay: 0.3s;">
+                    <div class="football-card-header">
+                        <div class="football-card-icon"><i class="fas fa-chart-bar"></i></div>
+                        <h3>Team Statistics</h3>
+                    </div>
+                    <div class="stat-bars">
+                        <div class="stat-bar-item">
+                            <label>Win Rate <span>78%</span></label>
+                            <div class="stat-bar"><div class="stat-bar-fill" data-width="78"></div></div>
+                        </div>
+                        <div class="stat-bar-item">
+                            <label>Goals Scored <span>64</span></label>
+                            <div class="stat-bar"><div class="stat-bar-fill" data-width="85"></div></div>
+                        </div>
+                        <div class="stat-bar-item">
+                            <label>Clean Sheets <span>12</span></label>
+                            <div class="stat-bar"><div class="stat-bar-fill" data-width="60"></div></div>
+                        </div>
+                        <div class="stat-bar-item">
+                            <label>Possession Avg <span>62%</span></label>
+                            <div class="stat-bar"><div class="stat-bar-fill" data-width="62"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tournament Highlights -->
+                <div class="football-card reveal" style="transition-delay: 0.4s;">
+                    <div class="football-card-header">
+                        <div class="football-card-icon"><i class="fas fa-trophy"></i></div>
+                        <h3>Tournament Highlights</h3>
+                    </div>
+                    <div class="tournament-list">
+                        <div class="tournament-item">
+                            <div class="tournament-trophy">🏆</div>
+                            <div class="tournament-info">
+                                <h4>Regional Youth Cup — Champions</h4>
+                                <p>Spring 2026 · Unbeaten in 6 matches</p>
+                            </div>
+                        </div>
+                        <div class="tournament-item">
+                            <div class="tournament-trophy">🥈</div>
+                            <div class="tournament-info">
+                                <h4>Inter-Church League — Runners Up</h4>
+                                <p>Winter 2025 · 5 wins, 1 loss</p>
+                            </div>
+                        </div>
+                        <div class="tournament-item">
+                            <div class="tournament-trophy">🏅</div>
+                            <div class="tournament-info">
+                                <h4>Community Shield — Semifinalists</h4>
+                                <p>Autumn 2025 · Best defensive record</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================
+         STATISTICS SECTION
+         ============================ -->
+    <section class="stats" id="stats">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-label">By the Numbers</span>
+                <h2 class="section-title">Our <span class="accent-purple">Impact</span></h2>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card reveal" style="transition-delay: 0.1s;">
+                    <div class="stat-icon"><i class="fas fa-user-group"></i></div>
+                    <div class="stat-number"><span class="counter" data-target="250">0</span><span class="counter-suffix">+</span></div>
+                    <div class="stat-label">Active Members</div>
+                </div>
+                <div class="stat-card reveal" style="transition-delay: 0.2s;">
+                    <div class="stat-icon"><i class="fas fa-book-bible"></i></div>
+                    <div class="stat-number"><span class="counter" data-target="120">0</span></div>
+                    <div class="stat-label">Bible Studies Completed</div>
+                </div>
+                <div class="stat-card reveal" style="transition-delay: 0.3s;">
+                    <div class="stat-icon"><i class="fas fa-futbol"></i></div>
+                    <div class="stat-number"><span class="counter" data-target="85">0</span></div>
+                    <div class="stat-label">Football Matches Played</div>
+                </div>
+                <div class="stat-card reveal" style="transition-delay: 0.4s;">
+                    <div class="stat-icon"><i class="fas fa-hand-holding-heart"></i></div>
+                    <div class="stat-number"><span class="counter" data-target="500">0</span><span class="counter-suffix">+</span></div>
+                    <div class="stat-label">Volunteer Hours</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================
+         EVENTS SECTION
+         ============================ -->
+    <section class="events" id="events">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-label">What's Coming</span>
+                <h2 class="section-title">Upcoming <span class="accent-blue">Events</span></h2>
+                <p class="section-desc">Don't miss out. Mark your calendar and be part of something incredible.</p>
+            </div>
+            <div class="events-grid">
+                <!-- Bible Study Night -->
+                <div class="event-card reveal" style="transition-delay: 0.1s;">
+                    <div class="event-card-image">
+                        <i class="fas fa-book-open"></i>
+                        <div class="event-date-badge">
+                            <span class="month">Jun</span>
+                            <span class="day">10</span>
+                        </div>
+                    </div>
+                    <div class="event-card-body">
+                        <h3>Bible Study Night</h3>
+                        <div class="event-meta">
+                            <span><i class="far fa-clock"></i> 6:30 PM</span>
+                            <span><i class="fas fa-map-pin"></i> Main Hall</span>
+                        </div>
+                        <p>Join us for an evening in the Word as we continue our series through Daniel. Snacks and fellowship after!</p>
+                        <a href="#contact" class="btn btn-sm btn-register">Register <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <!-- Football Tournament -->
+                <div class="event-card reveal" style="transition-delay: 0.2s;">
+                    <div class="event-card-image">
+                        <i class="fas fa-futbol"></i>
+                        <div class="event-date-badge">
+                            <span class="month">Jun</span>
+                            <span class="day">21</span>
+                        </div>
+                    </div>
+                    <div class="event-card-body">
+                        <h3>Summer Football Tournament</h3>
+                        <div class="event-meta">
+                            <span><i class="far fa-clock"></i> 9:00 AM</span>
+                            <span><i class="fas fa-map-pin"></i> City Park Fields</span>
+                        </div>
+                        <p>All-day tournament with 8 youth teams competing. Food trucks, music, and awards ceremony at sunset.</p>
+                        <a href="#contact" class="btn btn-sm btn-register">Register <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <!-- Youth Retreat -->
+                <div class="event-card reveal" style="transition-delay: 0.3s;">
+                    <div class="event-card-image">
+                        <i class="fas fa-mountain-sun"></i>
+                        <div class="event-date-badge">
+                            <span class="month">Jul</span>
+                            <span class="day">11</span>
+                        </div>
+                    </div>
+                    <div class="event-card-body">
+                        <h3>Youth Retreat Weekend</h3>
+                        <div class="event-meta">
+                            <span><i class="far fa-clock"></i> Fri–Sun</span>
+                            <span><i class="fas fa-map-pin"></i> Mountain Lodge</span>
+                        </div>
+                        <p>Three days of worship, teaching, team building, and adventure in the mountains. Limited spots — register early!</p>
+                        <a href="#contact" class="btn btn-sm btn-register">Register <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <!-- Worship Evening -->
+                <div class="event-card reveal" style="transition-delay: 0.4s;">
+                    <div class="event-card-image">
+                        <i class="fas fa-music"></i>
+                        <div class="event-date-badge">
+                            <span class="month">Jul</span>
+                            <span class="day">25</span>
+                        </div>
+                    </div>
+                    <div class="event-card-body">
+                        <h3>Worship Evening</h3>
+                        <div class="event-meta">
+                            <span><i class="far fa-clock"></i> 7:00 PM</span>
+                            <span><i class="fas fa-map-pin"></i> Auditorium</span>
+                        </div>
+                        <p>A night of live worship, prayer, and testimony. Come ready to encounter God in a powerful, Spirit-filled atmosphere.</p>
+                        <a href="#contact" class="btn btn-sm btn-register">Register <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================
+         GALLERY SECTION
+         ============================ -->
+    <section class="gallery" id="gallery">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-label">Moments</span>
+                <h2 class="section-title">Life at <span class="accent-gold">Rise Up</span></h2>
+                <p class="section-desc">Snapshots from our journey — on the pitch, in the Word, and side by side.</p>
+            </div>
+            <div class="gallery-masonry reveal">
+                <div class="gallery-item" data-caption="Match Day Action" data-index="0">
+                    <div class="gallery-placeholder gp-1"><i class="fas fa-futbol"></i></div>
+                    <div class="gallery-overlay">
+                        <span>Match Day Action</span>
+                        <i class="fas fa-expand"></i>
+                    </div>
+                </div>
+                <div class="gallery-item" data-caption="Bible Study Session" data-index="1">
+                    <div class="gallery-placeholder gp-2"><i class="fas fa-book-open"></i></div>
+                    <div class="gallery-overlay">
+                        <span>Bible Study Session</span>
+                        <i class="fas fa-expand"></i>
+                    </div>
+                </div>
+                <div class="gallery-item" data-caption="Worship Night" data-index="2">
+                    <div class="gallery-placeholder gp-3"><i class="fas fa-music"></i></div>
+                    <div class="gallery-overlay">
+                        <span>Worship Night</span>
+                        <i class="fas fa-expand"></i>
+                    </div>
+                </div>
+                <div class="gallery-item" data-caption="Community Outreach" data-index="3">
+                    <div class="gallery-placeholder gp-4"><i class="fas fa-hand-holding-heart"></i></div>
+                    <div class="gallery-overlay">
+                        <span>Community Outreach</span>
+                        <i class="fas fa-expand"></i>
+                    </div>
+                </div>
+                <div class="gallery-item" data-caption="Team Celebration" data-index="4">
+                    <div class="gallery-placeholder gp-5"><i class="fas fa-trophy"></i></div>
+                    <div class="gallery-overlay">
+                        <span>Team Celebration</span>
+                        <i class="fas fa-expand"></i>
+                    </div>
+                </div>
+                <div class="gallery-item" data-caption="Youth Fellowship" data-index="5">
+                    <div class="gallery-placeholder gp-6"><i class="fas fa-users"></i></div>
+                    <div class="gallery-overlay">
+                        <span>Youth Fellowship</span>
+                        <i class="fas fa-expand"></i>
+                    </div>
+                </div>
+                <div class="gallery-item" data-caption="Leadership Training" data-index="6">
+                    <div class="gallery-placeholder gp-7"><i class="fas fa-chalkboard-teacher"></i></div>
+                    <div class="gallery-overlay">
+                        <span>Leadership Training</span>
+                        <i class="fas fa-expand"></i>
+                    </div>
+                </div>
+                <div class="gallery-item" data-caption="Prayer Session" data-index="7">
+                    <div class="gallery-placeholder gp-8"><i class="fas fa-pray"></i></div>
+                    <div class="gallery-overlay">
+                        <span>Prayer Session</span>
+                        <i class="fas fa-expand"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" id="lightboxClose"><i class="fas fa-times"></i></button>
+        <button class="lightbox-nav lightbox-prev" id="lightboxPrev"><i class="fas fa-chevron-left"></i></button>
+        <button class="lightbox-nav lightbox-next" id="lightboxNext"><i class="fas fa-chevron-right"></i></button>
+        <div class="lightbox-content">
+            <div class="lightbox-image" id="lightboxImage"></div>
+            <div class="lightbox-caption" id="lightboxCaption"></div>
         </div>
     </div>
 
+    <!-- ============================
+         TESTIMONIALS SECTION
+         ============================ -->
+    <section class="testimonials" id="testimonials">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-label">Voices</span>
+                <h2 class="section-title">What Our <span class="accent-purple">Members</span> Say</h2>
+                <p class="section-desc">Real stories from real people whose lives have been transformed through Rise Up Youth.</p>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card reveal" style="transition-delay: 0.1s;">
+                    <div class="testimonial-stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"Rise Up Youth changed my life. The Bible studies deepened my faith, and the football team taught me discipline and teamwork. I found my purpose here — and a family that believes in me."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">JM</div>
+                        <div>
+                            <div class="testimonial-name">James Mwangi</div>
+                            <div class="testimonial-role">Youth Member, 2 Years</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card reveal" style="transition-delay: 0.2s;">
+                    <div class="testimonial-stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"I walked in shy and unsure. Now I lead a small group and play striker on the team. The leaders here pour into you and help you discover gifts you didn't know you had."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">SK</div>
+                        <div>
+                            <div class="testimonial-name">Sarah Kimani</div>
+                            <div class="testimonial-role">Small Group Leader</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card reveal" style="transition-delay: 0.3s;">
+                    <div class="testimonial-stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"The community service projects showed me that faith isn't just about Sundays — it's about how you live every day. Rise Up taught me to serve others with joy and purpose."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">DO</div>
+                        <div>
+                            <div class="testimonial-name">David Ochieng</div>
+                            <div class="testimonial-role">Volunteer Coordinator</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================
+         CONTACT SECTION
+         ============================ -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-label">Reach Out</span>
+                <h2 class="section-title">Get in <span class="accent-blue">Touch</span></h2>
+                <p class="section-desc">Ready to be part of the movement? Drop us a message and we'll connect you with the right people.</p>
+            </div>
+            <div class="contact-grid">
+                <form class="contact-form reveal" id="contactForm" style="transition-delay: 0.1s;">
+                    <div class="form-group">
+                        <input type="text" name="name" placeholder="Your Name" required autocomplete="name">
+                    </div>
+                    <div class="form-group">
+                        <input type="email" name="email" placeholder="Your Email" required autocomplete="email">
+                    </div>
+                    <div class="form-group">
+                        <textarea name="message" placeholder="Your Message" required></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-paper-plane"></i>&nbsp; Send Message
+                    </button>
+                </form>
+                <div class="contact-info reveal" style="transition-delay: 0.2s;">
+                    <div class="contact-info-card">
+                        <div class="contact-info-icon"><i class="fas fa-location-dot"></i></div>
+                        <div>
+                            <h4>Meeting Location</h4>
+                            <p>Grace Community Center, 45 Faith Avenue, Nairobi</p>
+                        </div>
+                    </div>
+                    <div class="contact-info-card">
+                        <div class="contact-info-icon"><i class="fas fa-envelope"></i></div>
+                        <div>
+                            <h4>Email Us</h4>
+                            <p>hello@riseupyouth.org</p>
+                        </div>
+                    </div>
+                    <div class="contact-info-card">
+                        <div class="contact-info-icon"><i class="fas fa-phone"></i></div>
+                        <div>
+                            <h4>Call Us</h4>
+                            <p>+254 700 123 456</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style="font-family:var(--font-display); font-weight:700; color:var(--white); margin-bottom:14px;">Follow Us</h4>
+                        <div class="social-links">
+                            <a href="#" class="social-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-link" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="social-link" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
+                            <a href="#" class="social-link" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                            <a href="#" class="social-link" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================
+         FOOTER
+         ============================ -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="nav-logo" style="margin-bottom:16px;">
+                        <div class="logo-icon"><i class="fas fa-cross"></i></div>
+                        <span>Rise Up Youth</span>
+                    </div>
+                    <p>Empowering the next generation to live boldly for Christ — through faith, fellowship, fitness, and servant leadership. Together we rise.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
+                        <a href="#" class="social-link" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="footer-heading">Quick Links</h4>
+                    <div class="footer-links">
+                        <a href="#home">Home</a>
+                        <a href="#about">About Us</a>
+                        <a href="#bible-study">Bible Study</a>
+                        <a href="#football">Football Club</a>
+                        <a href="#events">Events</a>
+                        <a href="#contact">Contact</a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="footer-heading">Programs</h4>
+                    <div class="footer-links">
+                        <a href="#bible-study">Weekly Bible Study</a>
+                        <a href="#football">Football Training</a>
+                        <a href="#events">Youth Retreat</a>
+                        <a href="#about">Leadership Program</a>
+                        <a href="#about">Community Service</a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="footer-heading">Connect</h4>
+                    <div class="footer-links">
+                        <a href="mailto:hello@riseupyouth.org">hello@riseupyouth.org</a>
+                        <a href="tel:+254700123456">+254 700 123 456</a>
+                        <a href="#">Grace Community Center</a>
+                        <a href="#">45 Faith Avenue, Nairobi</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Rise Up Youth. All rights reserved.</p>
+                <div class="footer-bottom-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- ============================
+         JAVASCRIPT
+         ============================ -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Mobile Menu Toggle
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
-            const mobileMenu = document.getElementById('mobile-menu');
-            mobileMenuButton.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
-            });
-
-            // Close mobile menu when a link is clicked
-            mobileMenu.addEventListener('click', (e) => {
-                if (e.target.tagName === 'A') {
-                    mobileMenu.classList.add('hidden');
-                }
-            });
-            
-            // SPA Navigation & Active Link Styling
-            const navLinks = document.querySelectorAll('.nav-link');
-            const sections = document.querySelectorAll('main section');
-
-            const observerOptions = {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.6
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        navLinks.forEach(link => {
-                            link.classList.remove('active');
-                            if (link.getAttribute('href').substring(1) === entry.target.id) {
-                                link.classList.add('active');
-                            }
-                        });
-                    }
-                });
-            }, observerOptions);
-
-            sections.forEach(section => {
-                observer.observe(section);
-            });
-
-
-            // Calendar Logic
-            const monthYearEl = document.getElementById('month-year');
-            const calendarGridEl = document.getElementById('calendar-grid');
-            const prevMonthBtn = document.getElementById('prev-month');
-            const nextMonthBtn = document.getElementById('next-month');
-            const eventModal = document.getElementById('event-modal');
-            const closeModalBtn = document.getElementById('close-modal');
-
-            let currentDate = new Date();
-
-            const mockEvents = [
-                {
-                    date: '2025-10-04',
-                    time: '10:00 AM',
-                    name: 'Morning Coffee Meetup',
-                    location: 'The Community Hall'
-                },
-                {
-                    date: '2025-10-12',
-                    time: '2:00 PM',
-                    name: 'Book Club: "The Alchemist"',
-                    location: 'Library Room'
-                },
-                {
-                    date: '2025-10-25',
-                    time: '6:00 PM',
-                    name: 'Potluck Dinner',
-                    location: 'Main Dining Area'
-                },
-                {
-                    date: '2025-11-08',
-                    time: '1:00 PM',
-                    name: 'Gardening Workshop',
-                    location: 'Community Garden'
-                },
-                 {
-                    date: '2025-11-22',
-                    time: '7:00 PM',
-                    name: 'Movie Night: Classic Cinema',
-                    location: 'Auditorium'
-                }
-            ];
-
-            function renderCalendar() {
-                const year = currentDate.getFullYear();
-                const month = currentDate.getMonth();
-
-                const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-                monthYearEl.textContent = `${monthNames[month]} ${year}`;
-
-                calendarGridEl.innerHTML = '';
-
-                const firstDayOfMonth = new Date(year, month, 1).getDay();
-                const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-                for (let i = 0; i < firstDayOfMonth; i++) {
-                    const emptyCell = document.createElement('div');
-                    calendarGridEl.appendChild(emptyCell);
-                }
-
-                for (let day = 1; day <= daysInMonth; day++) {
-                    const dayCell = document.createElement('div');
-                    dayCell.className = 'calendar-day p-4 h-24 border border-gray-200 text-center rounded-md';
-                    dayCell.textContent = day;
-
-                    const today = new Date();
-                    if (day === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
-                        dayCell.classList.add('bg-brand-green', 'text-white', 'font-bold');
-                    }
-
-                    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                    const eventsForDay = mockEvents.filter(e => e.date === dateStr);
-                    
-                    if (eventsForDay.length > 0) {
-                        dayCell.classList.add('has-event', 'bg-green-50');
-                        dayCell.addEventListener('click', () => {
-                            showEventModal(eventsForDay[0]);
-                        });
-                    }
-
-                    calendarGridEl.appendChild(dayCell);
-                }
-            }
-            
-            function showEventModal(event) {
-                document.getElementById('modal-title').textContent = event.name;
-                const eventDate = new Date(event.date + 'T00:00:00');
-                document.getElementById('modal-date').textContent = eventDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-                document.getElementById('modal-time').textContent = event.time;
-                document.getElementById('modal-location').textContent = event.location;
-                eventModal.classList.remove('hidden');
-            }
-
-            closeModalBtn.addEventListener('click', () => {
-                eventModal.classList.add('hidden');
-            });
-            
-            eventModal.addEventListener('click', (e) => {
-                 if (e.target === eventModal) {
-                    eventModal.classList.add('hidden');
-                 }
-            });
-
-            prevMonthBtn.addEventListener('click', () => {
-                currentDate.setMonth(currentDate.getMonth() - 1);
-                renderCalendar();
-            });
-
-            nextMonthBtn.addEventListener('click', () => {
-                currentDate.setMonth(currentDate.getMonth() + 1);
-                renderCalendar();
-            });
-
-            renderCalendar();
+        /* ============================================
+           PAGE LOADER
+           ============================================ */
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('pageLoader').classList.add('hidden');
+            }, 800);
         });
+
+        /* ============================================
+           NAVBAR — Sticky Glass Effect & Active Links
+           ============================================ */
+        const navbar = document.getElementById('navbar');
+        const sections = document.querySelectorAll('section[id]');
+        const navLinksAll = document.querySelectorAll('.nav-links a:not(.nav-cta)');
+
+        function handleScroll() {
+            const scrollY = window.scrollY;
+
+            // Glassmorphism on scroll
+            if (scrollY > 60) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+
+            // Back to top visibility
+            const backToTop = document.getElementById('backToTop');
+            if (scrollY > 600) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+
+            // Active nav link
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 120;
+                if (scrollY >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinksAll.forEach(link => {
+                link.style.color = '';
+                if (link.getAttribute('href') === '#' + current) {
+                    link.style.color = 'var(--blue-electric)';
+                }
+            });
+        }
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+
+        /* ============================================
+           HAMBURGER MENU
+           ============================================ */
+        const hamburger = document.getElementById('hamburger');
+        const mobileNav = document.getElementById('mobileNav');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            mobileNav.classList.toggle('open');
+            document.body.style.overflow = mobileNav.classList.contains('open') ? 'hidden' : '';
+        });
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                mobileNav.classList.remove('open');
+                document.body.style.overflow = '';
+            });
+        });
+
+        /* ============================================
+           SCROLL REVEAL (Intersection Observer)
+           ============================================ */
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+        /* ============================================
+           COUNTER ANIMATION
+           ============================================ */
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counter = entry.target;
+                    const target = parseInt(counter.dataset.target);
+                    const duration = 2000;
+                    const start = performance.now();
+
+                    function updateCounter(currentTime) {
+                        const elapsed = currentTime - start;
+                        const progress = Math.min(elapsed / duration, 1);
+                        // Ease out cubic
+                        const eased = 1 - Math.pow(1 - progress, 3);
+                        counter.textContent = Math.floor(target * eased);
+                        if (progress < 1) {
+                            requestAnimationFrame(updateCounter);
+                        } else {
+                            counter.textContent = target;
+                        }
+                    }
+
+                    requestAnimationFrame(updateCounter);
+                    counterObserver.unobserve(counter);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.counter').forEach(el => counterObserver.observe(el));
+
+        /* ============================================
+           STAT BAR ANIMATION
+           ============================================ */
+        const barObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const bars = entry.target.querySelectorAll('.stat-bar-fill');
+                    bars.forEach((bar, i) => {
+                        setTimeout(() => {
+                            bar.style.width = bar.dataset.width + '%';
+                        }, i * 200);
+                    });
+                    barObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.3 });
+
+        document.querySelectorAll('.stat-bars').forEach(el => barObserver.observe(el));
+
+        /* ============================================
+           BUTTON RIPPLE EFFECT
+           ============================================ */
+        document.querySelectorAll('.btn, .btn-register, .btn-submit').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                ripple.classList.add('ripple');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+                ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+                this.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+
+        /* ============================================
+           GALLERY LIGHTBOX
+           ============================================ */
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImage = document.getElementById('lightboxImage');
+        const lightboxCaption = document.getElementById('lightboxCaption');
+        const lightboxClose = document.getElementById('lightboxClose');
+        const lightboxPrev = document.getElementById('lightboxPrev');
+        const lightboxNext = document.getElementById('lightboxNext');
+        let currentLightboxIndex = 0;
+
+        const galleryData = [];
+        galleryItems.forEach((item, index) => {
+            const placeholder = item.querySelector('.gallery-placeholder');
+            const caption = item.dataset.caption;
+            galleryData.push({
+                bg: placeholder ? placeholder.style.cssText || getComputedStyle(placeholder).background : '',
+                icon: placeholder ? placeholder.innerHTML : '',
+                caption: caption,
+                classes: placeholder ? placeholder.className : ''
+            });
+
+            item.addEventListener('click', () => {
+                currentLightboxIndex = index;
+                openLightbox(index);
+            });
+        });
+
+        function openLightbox(index) {
+            const data = galleryData[index];
+            lightboxImage.className = 'lightbox-image ' + data.classes;
+            lightboxImage.innerHTML = data.icon;
+            lightboxImage.style.minWidth = '60vw';
+            lightboxImage.style.minHeight = '50vh';
+            lightboxCaption.textContent = data.caption;
+            lightbox.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        lightboxClose.addEventListener('click', closeLightbox);
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) closeLightbox();
+        });
+
+        lightboxPrev.addEventListener('click', (e) => {
+            e.stopPropagation();
+            currentLightboxIndex = (currentLightboxIndex - 1 + galleryData.length) % galleryData.length;
+            openLightbox(currentLightboxIndex);
+        });
+
+        lightboxNext.addEventListener('click', (e) => {
+            e.stopPropagation();
+            currentLightboxIndex = (currentLightboxIndex + 1) % galleryData.length;
+            openLightbox(currentLightboxIndex);
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (!lightbox.classList.contains('open')) return;
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowLeft') {
+                currentLightboxIndex = (currentLightboxIndex - 1 + galleryData.length) % galleryData.length;
+                openLightbox(currentLightboxIndex);
+            }
+            if (e.key === 'ArrowRight') {
+                currentLightboxIndex = (currentLightboxIndex + 1) % galleryData.length;
+                openLightbox(currentLightboxIndex);
+            }
+        });
+
+        /* ============================================
+           CONTACT FORM HANDLER
+           ============================================ */
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('.btn-submit');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i>&nbsp; Message Sent!';
+            btn.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.style.background = '';
+                this.reset();
+            }, 3000);
+        });
+
+        /* ============================================
+           BACK TO TOP
+           ============================================ */
+        document.getElementById('backToTop').addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        /* ============================================
+           PARALLAX HERO (subtle)
+           ============================================ */
+        const heroContent = document.querySelector('.hero-content');
+        const heroOrbs = document.querySelectorAll('.hero-orb');
+
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            if (scrollY < window.innerHeight) {
+                const factor = scrollY * 0.3;
+                heroContent.style.transform = `translateY(${factor}px)`;
+                heroContent.style.opacity = 1 - (scrollY / window.innerHeight);
+
+                heroOrbs.forEach((orb, i) => {
+                    const speed = 0.1 + (i * 0.05);
+                    orb.style.transform = `translateY(${scrollY * speed}px)`;
+                });
+            }
+        }, { passive: true });
     </script>
 </body>
 </html>
